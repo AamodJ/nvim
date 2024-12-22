@@ -88,6 +88,12 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 
 vim.keymap.set('n', '<leader>ci', ':split term://ipython<CR>', { desc = '[C]reate [i]python console' })
 
+vim.keymap.set('n', '-', '<cmd>Oil<CR>', { desc = 'Start Oil' })
+
+vim.keymap.set('n', '<space><space>x', '<cmd>source %<CR>', { desc = 'Source current file' })
+vim.keymap.set('n', '<space>x', ':.lua<CR>', { desc = 'Source current line' })
+vim.keymap.set('v', '<space>x', ':lua<CR>', { desc = 'Source visual' })
+
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.
