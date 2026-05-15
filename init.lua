@@ -1,3 +1,4 @@
+#!/usr/bin/env lua
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -6,6 +7,9 @@ vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
+
+-- Disable editorConfig globally
+vim.g.editorconfig = false
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -19,6 +23,9 @@ vim.opt.relativenumber = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
 -- vim.opt.relativenumber = true
+vim.opt.expandtab = true
+vim.opt.shiftwidth = 4
+vim.opt.tabstop = 4
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -121,17 +128,14 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
-vim.keymap.set("n", "<tab>", "<cmd>BufferNext<CR>", { desc = 'Next Tab' })
-vim.keymap.set("n", "<s-tab>", "<cmd>BufferPrevious<CR>", { desc = 'Previous tab' })
-vim.keymap.set("n", "<leader>qq", "<cmd>BufferClose<CR>", { desc = '[Q]lose [B]uffer' })
-vim.keymap.set("n", "<leader>qr", "<cmd>BufferRestore<CR>", { desc = '[R]estore [B]uffer' })
+vim.keymap.set('n', '<tab>', '<cmd>BufferNext<CR>', { desc = 'Next Tab' })
+vim.keymap.set('n', '<s-tab>', '<cmd>BufferPrevious<CR>', { desc = 'Previous tab' })
+vim.keymap.set('n', '<leader>qq', '<cmd>BufferClose<CR>', { desc = '[Q]lose [B]uffer' })
+vim.keymap.set('n', '<leader>qr', '<cmd>BufferRestore<CR>', { desc = '[R]estore [B]uffer' })
 
-vim.keymap.set(
-  "n",
-  "<leader>dg",
-  "<cmd>lua vim.diagnostic.enable(not vim.diagnostic.is_enabled())<CR>",
-  { desc = 'Toggle [D]ia[g]nostics' }
-)
+vim.keymap.set('n', '<leader>dg', '<cmd>lua vim.diagnostic.enable(not vim.diagnostic.is_enabled())<CR>', { desc = 'Toggle [D]ia[g]nostics' })
+
+vim.keymap.set('n', 'G', 'Gzt', { desc = 'Goto bottom and Move Cursor to Top' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -189,24 +193,6 @@ vim.opt.rtp:prepend(lazypath)
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
 
-  {
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'tiagovla/tokyodark.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
-    init = function()
-      vim.cmd.colorscheme 'tokyodark'
-
-      -- You can configure highlights by doing something like:
-      vim.cmd.hi 'Comment gui=none'
-    end,
-  },
-  {
-    "folke/tokyonight.nvim",
-    lazy = false,
-    priority = 1000,
-    opts = {},
-  },
-
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
   -- keys can be used to configure plugin behavior/loading/etc.
@@ -222,12 +208,13 @@ require('lazy').setup({
 
   { import = 'config.plugins' },
   { import = 'custom.plugins' },
+  { import = 'themes' },
 
   { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
-  -- 'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+  'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
 
   -- Highlight todo, notes, etc in comments
-  { 'folke/todo-comments.nvim',    event = 'VimEnter',            dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
@@ -267,3 +254,4 @@ require('lazy').setup({
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+vim.cmd.colorscheme 'kanagawa'

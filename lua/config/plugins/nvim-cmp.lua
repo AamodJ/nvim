@@ -5,26 +5,8 @@ return { -- Autocompletion
     -- Snippet Engine & its associated nvim-cmp source
     {
       'L3MON4D3/LuaSnip',
-      build = (function()
-        -- Build Step is needed for regex support in snippets.
-        -- This step is not supported in many windows environments.
-        -- Remove the below condition to re-enable on windows.
-        if vim.fn.has 'win32' == 1 or vim.fn.executable 'make' == 0 then
-          return
-        end
-        return 'make install_jsregexp'
-      end)(),
-      dependencies = {
-        -- `friendly-snippets` contains a variety of premade snippets.
-        --    See the README about individual language/framework/plugin snippets:
-        --    https://github.com/rafamadriz/friendly-snippets
-        -- {
-        --   'rafamadriz/friendly-snippets',
-        --   config = function()
-        --     require('luasnip.loaders.from_vscode').lazy_load()
-        --   end,
-        -- },
-      },
+      version = '*',
+      build = 'make install_jsregexp',
     },
     'saadparwaiz1/cmp_luasnip',
 
@@ -37,13 +19,88 @@ return { -- Autocompletion
   config = function()
     -- See `:help cmp`
     local cmp = require 'cmp'
-    local luasnip = require 'luasnip'
-    luasnip.config.setup {}
+    local ls = require 'luasnip'
+    local types = require 'luasnip.util.types'
+    -- Snippet creator
+    -- s(<trigger>, <nodes>)
+    local s = ls.snippet
+    -- Formatter node. Takes a format string and list of nodes
+    -- fmt(<fmt_string>, { ... nodes } )
+    local fmt = require('luasnip.extras.fmt').fmt
+    -- Insert node
+    -- Takes position like $1 and optionally some default text
+    -- i(<position>, [default_text])
+    local i = ls.insert_node
+    local t = ls.text_node
+    -- Repeats a node at position
+    -- rep(<position>)
+    local rep = require('luasnip.extras').rep
+
+    ls.config.setup {
+      -- This tells luasnip to remember our last snippet, allowing you to jump to it even when you move outside of it
+      history = true,
+      -- Makes your snippets update as you type
+      updateevents = 'TextChanged,TextChangedI',
+      -- autosnippetts
+      -- enable_autosnippets = true,
+
+      ext_opts = {
+        [types.choiceNode] = {
+          active = {
+            virt_next = { { '<-', 'Error' } },
+          },
+        },
+      },
+    }
+
+    -- Actual snippets
+    ls.add_snippets('vimwiki', {
+      s('cc', {
+        t '{{{class: "brush: ',
+        i(1),
+        t { '"', '' },
+        i(2),
+        t { '', '}}}', '' },
+        i(0),
+      }),
+    })
+    ls.add_snippets('python', {
+      s('fn', {
+        t 'def ',
+        i(1),
+        t '(',
+        i(2),
+        t ') -> ',
+        i(3),
+        t { ':', '\t' },
+        i(4),
+        t ' = ',
+        i(5),
+        t { '', '\t' },
+        i(6),
+        t { '', '' },
+        t { '\treturn ' },
+        rep(4),
+        t { '', '' },
+        t { '', '' },
+        i(0),
+      }),
+      -- s(
+      --   'cc',
+      --   fmt [[
+      --   {{{{{{class: "brush: {}"
+      --   {}
+      --   }}}}}}
+      --   {}
+      --   ]],
+      --   { i(1), i(2), i(0) }
+      -- ),
+    })
 
     cmp.setup {
       snippet = {
         expand = function(args)
-          luasnip.lsp_expand(args.body)
+          ls.lsp_expand(args.body)
         end,
       },
       completion = { completeopt = 'menu,menuone,noinsert' },
@@ -87,13 +144,18 @@ return { -- Autocompletion
         -- <c-l> will move you to the right of each of the expansion locations.
         -- <c-h> is similar, except moving you backwards.
         ['<C-l>'] = cmp.mapping(function()
-          if luasnip.expand_or_locally_jumpable() then
-            luasnip.expand_or_jump()
+          if ls.expand_or_locally_jumpable() then
+            ls.expand_or_jump()
           end
         end, { 'i', 's' }),
         ['<C-h>'] = cmp.mapping(function()
-          if luasnip.locally_jumpable(-1) then
-            luasnip.jump(-1)
+          if ls.locally_jumpable(-1) then
+            ls.jump(-1)
+          end
+        end, { 'i', 's' }),
+        ['<C-j>'] = cmp.mapping(function()
+          if ls.choice_active() then
+            ls.change_choice(1)
           end
         end, { 'i', 's' }),
 

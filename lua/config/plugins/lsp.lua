@@ -26,7 +26,7 @@ local lsp = {
 
     -- Useful status updates for LSP.
     -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-    { 'j-hui/fidget.nvim',       opts = {} },
+    { 'j-hui/fidget.nvim', opts = {} },
 
     -- Allows extra capabilities provided by nvim-cmp
     'hrsh7th/cmp-nvim-lsp',
@@ -149,8 +149,8 @@ local lsp = {
     --  - settings (table): Override the default settings passed when initializing the server.
     --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
     local servers = {
-      -- clangd = {},
-      -- gopls = {},
+      clangd = {},
+      gopls = {},
       pyright = {},
       -- rust_analyzer = {},
       -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
@@ -189,9 +189,15 @@ local lsp = {
     -- You can add other tools here that you want Mason to install
     -- for you, so that they are available from within Neovim.
     local ensure_installed = vim.tbl_keys(servers or {})
-    -- vim.list_extend(ensure_installed, {
-    --   'stylua', -- Used to format Lua code
-    -- })
+    vim.list_extend(ensure_installed, {
+      'stylua', -- Used to format Lua code
+      'ruff',
+      'mypy',
+      'isort',
+      'black', -- python related
+      'markdownlint', -- markdown
+      'qmlls', -- qml
+    })
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
     require('mason-lspconfig').setup {

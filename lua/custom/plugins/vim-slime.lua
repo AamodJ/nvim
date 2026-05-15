@@ -25,6 +25,6 @@ return {
   config = function()
     vim.keymap.set({ 'n', 'i' }, '<m-l>', function()
       vim.cmd [[call slime#send_cell()]]
-    end, { desc = 'Send code to ipython terinal' })
+    end, { desc = 'Send code to ipython terminal' })
   end,
 }
