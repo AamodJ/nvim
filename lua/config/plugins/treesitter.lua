@@ -32,7 +32,7 @@ return {
     -- treesitter based folding
     vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
     vim.wo[0][0].foldmethod = 'expr'
-    vim.wo[0][0].foldminlines = 20
+    vim.wo[0][0].foldminlines = 200
 
     -- treesitter based indentation
     vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
