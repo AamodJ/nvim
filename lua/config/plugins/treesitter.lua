@@ -28,5 +28,13 @@ return {
     -- Small overhead. The 'all' tier takes up about 230MB of disk space
     -- We can spare that much space
     require('nvim-treesitter').install 'unstable'
+
+    -- treesitter based folding
+    vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+    vim.wo[0][0].foldmethod = 'expr'
+    vim.wo[0][0].foldminlines = 20
+
+    -- treesitter based indentation
+    vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
   end,
 }
