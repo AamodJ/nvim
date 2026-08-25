@@ -1,26 +1,40 @@
-return { -- Highlight, edit, and navigate code
+return {
   'nvim-treesitter/nvim-treesitter',
-  tag = 'v0.10.0',
+  branch = 'main',
   build = ':TSUpdate',
-  main = 'nvim-treesitter.configs', -- Sets main module to use for opts
-  -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-  opts = {
-    ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
-    -- Autoinstall languages that are not installed
-    auto_install = true,
-    highlight = {
-      enable = true,
-      -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-      --  If you are experiencing weird indenting issues, add the language to
-      --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-      additional_vim_regex_highlighting = { 'ruby' },
-    },
-    indent = { enable = true, disable = { 'ruby' } },
-  },
-  -- There are additional nvim-treesitter modules that you can use to interact
-  -- with nvim-treesitter. You should go explore a few and see what interests you:
-  --
-  --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-  --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-  --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+  lazy = false,
+  config = function()
+    -- local ensure_installed = {
+    --   -- shell
+    --   'bash',
+    --   'zsh',
+    --   -- programming
+    --   'c',
+    --   'python',
+    --   'lua',
+    --   -- docs
+    --   'diff',
+    --   'html',
+    --   'luadoc',
+    --   'markdown',
+    --   'markdown_inline',
+    --   'query',
+    --   'vim',
+    --   'vimdoc',
+    -- }
+    --
+    -- We install the unstable tier with 314 parsers
+    -- Better to install this than manually specify each parser
+    -- Small overhead. The 'all' tier takes up about 230MB of disk space
+    -- We can spare that much space
+    require('nvim-treesitter').install 'unstable'
+
+    -- treesitter based folding
+    vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+    vim.wo[0][0].foldmethod = 'expr'
+    vim.wo[0][0].foldminlines = 20
+
+    -- treesitter based indentation
+    vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+  end,
 }
