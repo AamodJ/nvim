@@ -4,30 +4,31 @@ return {
   build = ':TSUpdate',
   lazy = false,
   config = function()
-    -- local ensure_installed = {
-    --   -- shell
-    --   'bash',
-    --   'zsh',
-    --   -- programming
-    --   'c',
-    --   'python',
-    --   'lua',
-    --   -- docs
-    --   'diff',
-    --   'html',
-    --   'luadoc',
-    --   'markdown',
-    --   'markdown_inline',
-    --   'query',
-    --   'vim',
-    --   'vimdoc',
-    -- }
-    --
-    -- We install the unstable tier with 314 parsers
-    -- Better to install this than manually specify each parser
-    -- Small overhead. The 'all' tier takes up about 230MB of disk space
-    -- We can spare that much space
-    require('nvim-treesitter').install 'unstable'
+    local ensure_installed = {
+      -- shell
+      'bash',
+      'zsh',
+      -- programming
+      'c',
+      'python',
+      'lua',
+      'nix',
+      -- docs
+      'diff',
+      'html',
+      'luadoc',
+      'markdown',
+      'markdown_inline',
+      'query',
+      'vim',
+      'vimdoc',
+    }
+
+    -- It's recommended to install the unstable list with over 314 parsers
+    -- But installing them might fail. We don't want to keep trying the
+    -- reinstall everytime nvim opens. So we ensure only few installed and
+    -- leave it to the user to install the rest
+    require('nvim-treesitter').install(ensure_installed)
 
     -- treesitter based folding
     vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
