@@ -197,6 +197,7 @@ local lsp = {
       'black', -- python related
       'markdownlint', -- markdown
       'qmlls', -- qml
+      'nil', -- nix
     })
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
